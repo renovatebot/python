@@ -1,6 +1,7 @@
 # renovate: datasource=docker depName=ubuntu versioning=docker
 ARG UBUNTU_VERSION=20.04
 
+
 #--------------------------------------
 # base image
 #--------------------------------------
@@ -25,3 +26,7 @@ RUN set -ex; \
   ./install.sh; \
   popd; \
   rm -rf pyenv;
+
+
+# renovate: datasource=docker depName=python versioning=docker
+ARG PYTHON_VERSION=3.7.5
