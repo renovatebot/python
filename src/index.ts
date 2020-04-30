@@ -30,31 +30,36 @@ async function pythonBuilder(ws: string, version: string): Promise<void> {
 // }
 
 (async () => {
-  const ws = process.cwd();
-  const data = `${ws}/data/${getEnv('UBUNTU_VERSION')}`;
+  try {
+    const ws = process.cwd();
+    const data = `${ws}/data/${getEnv('UBUNTU_VERSION')}`;
 
-  // const github = new GitHub(process.env.GITHUB_TOKEN);
+    // const github = new GitHub(process.env.GITHUB_TOKEN);
 
-  // // Get owner and repo from context of payload that triggered the action
-  // const { owner, repo } = context.repo;
+    // // Get owner and repo from context of payload that triggered the action
+    // const { owner, repo } = context.repo;
 
-  exec('mkdir', ['-p', `.cache/python`]);
+    exec('mkdir', ['-p', `.cache/python`]);
 
-  for (const version of ['3.7.2']) {
-    if (existsSync(`${data}/python-${version}.tar.xz`)) {
-      log('Skipping existing version:', version);
-      continue;
+    for (const version of ['3.7.2']) {
+      if (existsSync(`${data}/python-${version}.tar.xz`)) {
+        log('Skipping existing version:', version);
+        continue;
+      }
+
+      log('Building version:', version);
+      await pythonBuilder(ws, version);
+
+      await exec('tar', [
+        '-cJf',
+        `./.cache/python-${version}.tar.xz`,
+        '-C',
+        '.cache/python',
+        version,
+      ]);
     }
-
-    log('Building version:', version);
-    await pythonBuilder(ws, version);
-
-    await exec('tar', [
-      '-cJf',
-      `./.cache/python-${version}.tar.xz`,
-      '-C',
-      '.cache/python',
-      version,
-    ]);
+  } catch (e) {
+    log.error(e.message);
+    process.exit(1);
   }
 })();
