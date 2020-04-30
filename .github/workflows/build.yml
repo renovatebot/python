@@ -94,6 +94,8 @@ jobs:
       - name: Prepare
         if: ${{github.ref == 'refs/heads/master'}}
         run: |
+          git config --global user.email 'bot@renovateapp.com'
+          git config --global user.name  'Renovate Bot'
           git fetch origin data
           git worktree add --track -b data ./data origin/data
           cp -R ./.cache/* ./data/
