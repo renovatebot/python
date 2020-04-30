@@ -51,6 +51,12 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
+      - name: Init platform
+        id: init
+        shell: bash
+        run: |
+          echo "::set-output name=yarn_cache::$(yarn cache dir)"
+
       - uses: actions/checkout@v2
 
       - name: Cache Yarn packages
