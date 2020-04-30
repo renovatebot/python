@@ -17,11 +17,11 @@ SHELL ["/bin/bash" , "-c"]
 
 ENTRYPOINT [ "docker-entrypoint.sh" ]
 
-RUN install-apt build-essential libssl-dev libreadline-dev zlib1g-dev libffi-dev
+RUN install-apt dumb-init build-essential libssl-dev libreadline-dev zlib1g-dev libffi-dev
 
 
 # renovate: datasource=docker versioning=docker
-RUN install-tool dumb-init node
+RUN install-tool node
 
 RUN set -ex; \
   git clone https://github.com/pyenv/pyenv.git; \
