@@ -1,0 +1,63 @@
+name: build
+
+on:
+  push:
+    branches:
+      - master
+      - "renovate/**"
+
+  pull_request:
+
+env:
+  # https://github.com/chalk/supports-color/issues/106
+  FORCE_COLOR: true
+  NODE_VERSION: 12
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: github-cleanup
+        uses: renovatebot/internal-tools@v0
+        continue-on-error: true
+        with:
+          command: github-cleanup
+          token: ${{ secrets.GH_TOKEN }}
+
+  build:
+    needs: [cleanup]
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 60
+
+    strategy:
+      matrix:
+        ubuntu_version: [18.04, 20.04]
+
+    env:
+      UBUNTU_VERSION: ${{ matrix.ubuntu_version }}
+
+    steps:
+      - name: docker-config
+        uses: renovatebot/internal-tools@v0
+        with:
+          command: docker-config
+
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - uses: actions/checkout@v2
+
+      - name: Build builder
+        run: docker buildx build --load -t builder --build-arg UBUNTU_VERSION .
+
+      - name: Build build python
+        run: |
+          docker run --rm -u root -v $PWD/.cache:/usr/local/python builder python-build 3.8.2 /usr/local/python/3.8.2
+          docker run --rm -u root -v $PWD/.cache:/usr/local/python builder python-build 3.8.1 /usr/local/python/3.8.1
+
+      - run: ls -la .cache/
