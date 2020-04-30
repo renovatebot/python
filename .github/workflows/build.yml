@@ -63,9 +63,23 @@ jobs:
       - name: Build build python
         run: yarn start
 
-      - run: ls -la .cache/
-
       - uses: actions/upload-artifact@v2
         with:
-          name: python
+          name: ${{ matrix.ubuntu_version }}
           path: .cache/*.tar.xz
+
+  publish:
+    needs: [build]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/download-artifact@v2
+
+      - name: Prepare
+        run: |
+          git worktree add --track -b data ../data origin/data
+          find ./ -type f -name *.tar.gz -exec echo {} \; -exec cp {} ../data/ \;
+          pushd ../data
+          git add *.tar.xz
+          git diff-index --quiet HEAD || git commit -m "updated builds"
+          git push -f origin data:data

@@ -16,7 +16,7 @@ async function dockerBuilder(ws: string, ...args: string[]): Promise<void> {
     '-u',
     'root',
     '-v',
-    `${ws}/.cache:/usr/local/python`,
+    `${ws}/.cache/python:/usr/local/python`,
     'builder',
     ...args
   );
@@ -28,6 +28,13 @@ async function dockerBuilder(ws: string, ...args: string[]): Promise<void> {
 
 (async () => {
   const ws = process.cwd();
+
+  // const github = new GitHub(process.env.GITHUB_TOKEN);
+
+  // // Get owner and repo from context of payload that triggered the action
+  // const { owner, repo } = context.repo;
+
+  exec('mkdir', ['-p', `.cache/python`]);
 
   for (const version of ['3.7.2']) {
     await dockerBuilder(
@@ -41,7 +48,7 @@ async function dockerBuilder(ws: string, ...args: string[]): Promise<void> {
       '-cJf',
       `./.cache/python-${version}.tar.xz`,
       '-C',
-      '.cache',
+      '.cache/python',
       version,
     ]);
   }
