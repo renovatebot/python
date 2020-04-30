@@ -120,8 +120,11 @@ jobs:
       - name: Release
         if: ${{github.ref == 'refs/heads/master'}}
         run: |
-          set -e
-          [[ ! -d "./.cache" ]] && exit 0
+          set -ex
+          if [[ ! -d "./.cache" ]]; then
+            echo "No new files! Skipping release"
+            exit 0
+          fi
           shopt -s globstar
           cp --parents -R ./.cache/**/*.tar.xz ./data/
           pushd ./data
