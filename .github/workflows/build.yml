@@ -12,6 +12,7 @@ env:
   # https://github.com/chalk/supports-color/issues/106
   FORCE_COLOR: true
   NODE_VERSION: 12
+  YARN_CACHE_KEY: v1
 
 jobs:
   cleanup:
@@ -52,6 +53,15 @@ jobs:
 
       - uses: actions/checkout@v2
 
+      - name: Cache Yarn packages
+        id: yarn_cache_packages
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.init.outputs.yarn_cache }}
+          key: ${{ env.YARN_CACHE_KEY }}-${{ runner.os }}-yarn_cache-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ env.YARN_CACHE_KEY }}-${{ runner.os }}-yarn_cache-
+
       - name: Cache node_modules
         uses: actions/cache@v1
         with:
@@ -59,6 +69,11 @@ jobs:
           key: ${{ runner.os }}-${{ env.NODE_VERSION }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-${{ env.NODE_VERSION }}-yarn-
+
+      # Clear caches on cache miss, otherwise they will grow indefinitely
+      - name: Clear yarn cache
+        if: github.ref == 'refs/heads/master' && steps.yarn_cache_packages.outputs.cache-hit != 'true'
+        run: yarn cache clean
 
       - name: Prepare
         run: |
