@@ -29,4 +29,6 @@ RUN set -ex; \
 
 
 # renovate: datasource=docker depName=python versioning=docker
-ARG PYTHON_VERSION=3.7.5
+ENV PYTHON_VERSION=3.7.5
+
+CMD ["python-build", "${PYTHON_VERSION}", "/usr/local/python/${PYTHON_VERSION}"]

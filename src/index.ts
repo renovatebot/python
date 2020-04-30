@@ -37,12 +37,7 @@ async function dockerBuilder(ws: string, ...args: string[]): Promise<void> {
   exec('mkdir', ['-p', `.cache/python`]);
 
   for (const version of ['3.7.2']) {
-    await dockerBuilder(
-      ws,
-      'python-build',
-      version,
-      `/usr/local/python/${version}`
-    );
+    await dockerBuilder(ws, 'python-build');
 
     await exec('tar', [
       '-cJf',
