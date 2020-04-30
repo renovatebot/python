@@ -54,6 +54,7 @@ jobs:
 
       - name: Prepare
         run: |
+          git worktree add --track -b data ./data origin/data
           yarn install --frozen-lockfile --link-duplicates
 
       - name: Build builder
@@ -73,13 +74,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v2
+
       - uses: actions/download-artifact@v2
+        with:
+          path: .cache
 
       - name: Prepare
         run: |
-          git worktree add --track -b data ../data origin/data
-          find ./ -type f -name *.tar.gz -exec echo {} \; -exec cp {} ../data/ \;
-          pushd ../data
+          git worktree add --track -b data ./data origin/data
+          mv -R .cache/* ./data/
+          pushd ./data
           git add *.tar.xz
           git diff-index --quiet HEAD || git commit -m "updated builds"
           git push -f origin data:data
