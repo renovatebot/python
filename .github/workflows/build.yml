@@ -51,8 +51,6 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
 
       - name: Prepare
         run: |
@@ -78,8 +76,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
 
       - uses: actions/download-artifact@v2
         with:
