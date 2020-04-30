@@ -110,8 +110,6 @@ jobs:
         with:
           path: ./.cache
 
-      - run: ls -la .cache/
-
       - name: Prepare
         if: ${{github.ref == 'refs/heads/master'}}
         run: |
@@ -119,6 +117,7 @@ jobs:
           git config --global user.name  'Renovate Bot'
           git fetch origin data
           git worktree add --track -b data ./data origin/data
+          mkdir -p ./.cache
           cp -R ./.cache/* ./data/
           pushd ./data
           git add *.tar.xz
