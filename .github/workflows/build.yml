@@ -85,6 +85,7 @@ jobs:
           path: .cache
 
       - name: Prepare
+        if: ${{github.ref == 'refs/heads/master'}}
         run: |
           git worktree add --track -b data ./data origin/data
           mv -R .cache/* ./data/
