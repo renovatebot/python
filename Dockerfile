@@ -31,5 +31,4 @@ RUN set -ex; \
 # renovate: datasource=docker depName=python versioning=docker
 ENV PYTHON_VERSION=3.7.5
 
-# CMD ["python-build", "${PYTHON_VERSION}", "/usr/local/python/${PYTHON_VERSION}"]
-CMD set -ex; mkdir -p /usr/local/python/${PYTHON_VERSION}; echo ${PYTHON_VERSION} > /usr/local/python/${PYTHON_VERSION}/version
+CMD ["python-build", "${PYTHON_VERSION}", "/usr/local/python/${PYTHON_VERSION}"]
