@@ -120,6 +120,8 @@ jobs:
       - name: Release
         if: ${{github.ref == 'refs/heads/master'}}
         run: |
+          set -e
+          [[ ! -d "./.cache" ]] && exit 0
           shopt -s globstar
           cp --parents -R ./.cache/**/*.tar.xz ./data/
           pushd ./data
