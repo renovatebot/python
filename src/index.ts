@@ -17,9 +17,9 @@ async function pythonBuilder(ws: string, version: string): Promise<void> {
   await dockerRun(
     '-u',
     'root',
-    '-v',
     '-e',
     `PYTHON_VERSION=${version}`,
+    '-v',
     `${ws}/.cache/python:/usr/local/python`,
     'builder'
   );
