@@ -91,7 +91,7 @@ jobs:
         run: |
           docker buildx build --load -t builder --build-arg UBUNTU_VERSION .
 
-      - name: Build build python
+      - name: Build python
         run: yarn start
 
       - uses: actions/upload-artifact@v2
@@ -111,7 +111,6 @@ jobs:
           path: ./.cache
 
       - name: Prepare
-        if: ${{github.ref == 'refs/heads/master'}}
         run: |
           git config --global user.email 'bot@renovateapp.com'
           git config --global user.name  'Renovate Bot'
@@ -119,7 +118,7 @@ jobs:
           git worktree add --track -b data ./data origin/data
           mkdir -p ./.cache
 
-      - name: Prepare
+      - name: Release
         if: ${{github.ref == 'refs/heads/master'}}
         run: |
           cp -R ./.cache/* ./data/
