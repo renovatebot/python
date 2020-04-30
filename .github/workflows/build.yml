@@ -12,7 +12,7 @@ env:
   # https://github.com/chalk/supports-color/issues/106
   FORCE_COLOR: true
   NODE_VERSION: 12
-  YARN_CACHE_KEY: v1
+  YARN_CACHE_KEY: v2
 
 jobs:
   cleanup:
