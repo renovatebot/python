@@ -7,7 +7,7 @@
   "author": "Michael Kriese <michael.kriese@visualon.de>",
   "main": "dist/index.js",
   "scripts": {
-    "compile": "tsc src/index.ts",
+    "compile": "tsc -p .",
     "eslint": "eslint . --ext .js,.mjs,.ts",
     "eslint:fix": "yarn eslint --fix",
     "lint": "run-s eslint prettier",
