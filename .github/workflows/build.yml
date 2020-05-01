@@ -109,6 +109,8 @@ jobs:
 
       - name: python-builder
         uses: ./actions/builder/
+        with:
+          dry-run: ${{github.ref != 'refs/heads/master'}}
 
       - uses: actions/upload-artifact@v2
         with:
@@ -132,5 +134,6 @@ jobs:
           path: ./dist
 
       - name: git-release
-        if: ${{github.ref == 'refs/heads/master'}}
         uses: ./actions/releaser/
+        with:
+          dry-run: ${{github.ref != 'refs/heads/master'}}

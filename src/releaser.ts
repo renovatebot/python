@@ -3,6 +3,9 @@ import shell from 'shelljs';
 import { preparePages, SimpleGit, git } from './utils/git';
 import { existsSync, ensureDir, writeFile } from 'fs-extra';
 import { get as getVersioning } from 'renovate/dist/versioning';
+import { setFailed } from '@actions/core';
+import { isDryRun } from './util';
+import chalk from 'chalk';
 
 const verRe = /\/(?<name>(?<release>\d+\.\d+)\/python-(?<version>\d+\.\d+\.\d+)\.tar\.xz)$/;
 
@@ -41,7 +44,7 @@ async function updateReadme(path: string): Promise<void> {
 
   let md = `# python releases\n\n` + `Prebuild python builds for ubuntu\n\n`;
   for (const release of Object.keys(releases).sort(dockerVer.sortVersions)) {
-    md += `## ubuntu ${release}\n\n`;
+    md += `\n\n## ubuntu ${release}\n\n`;
 
     const data = releases[release];
 
@@ -56,6 +59,7 @@ async function updateReadme(path: string): Promise<void> {
 (async () => {
   try {
     log.info('Releaser started');
+    const dryRun = isDryRun();
     const ws = process.cwd();
     const data = `${ws}/data`;
     const cache = `${ws}/.cache`;
@@ -102,7 +106,15 @@ async function updateReadme(path: string): Promise<void> {
     if (!status.isClean()) {
       log('Commiting files');
       git.commit('updated files');
-      git.push('origin', 'gh-pages', { '--force': true });
+      if (dryRun) {
+        log.warn(
+          chalk.yellow('[DRY_RUN]'),
+          chalk.blue('Would push:'),
+          'gh-pages'
+        );
+      } else {
+        git.push('origin', 'gh-pages', { '--force': true });
+      }
     }
 
     for (const version of versions) {
@@ -111,9 +123,12 @@ async function updateReadme(path: string): Promise<void> {
     }
 
     log('Push tags');
-    git.pushTags();
-  } catch (e) {
-    log.error(e.message);
-    process.exit(1);
+    if (dryRun) {
+      log.warn(chalk.yellow('[DRY_RUN]'), chalk.blue('Would push tags'));
+    } else {
+      git.pushTags();
+    }
+  } catch (error) {
+    setFailed(error.message);
   }
 })();

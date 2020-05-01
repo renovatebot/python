@@ -64,15 +64,19 @@ export function getEnv(key: string): string {
   return process.env[key] ?? '';
 }
 
+export function getWorkspace(): string {
+  return getEnv('GITHUB_WORKSPACE') ?? process.cwd();
+}
+
 export async function readJson<T = unknown>(file: string): Promise<T> {
-  const path = join(getEnv('GITHUB_WORKSPACE'), file);
+  const path = join(getWorkspace(), file);
   const res = await import(path);
   // istanbul ignore next
   return res?.default ?? res;
 }
 
 export async function readFile(file: string): Promise<string> {
-  const path = join(getEnv('GITHUB_WORKSPACE'), file);
+  const path = join(getWorkspace(), file);
   return await readFileAsync(path, 'utf8');
 }
 
