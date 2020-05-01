@@ -50,7 +50,7 @@ async function updateReadme(path: string): Promise<void> {
     }
   }
 
-  await writeFile(`${path}/readme.md`, md);
+  await writeFile(`${path}/README.md`, md);
 }
 
 (async () => {
