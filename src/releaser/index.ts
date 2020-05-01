@@ -137,6 +137,7 @@ async function updateReadme(path: string): Promise<void> {
       git.pushTags();
     }
   } catch (error) {
+    log(error.stack);
     setFailed(error.message);
   }
 })();

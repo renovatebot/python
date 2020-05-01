@@ -210,6 +210,7 @@ const DefaultUbuntuRelease = '18.04';
       ]);
     }
   } catch (error) {
+    log(error.stack);
     setFailed(error.message);
   }
 })();
