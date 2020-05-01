@@ -1,10 +1,10 @@
-import log from './utils/logger';
+import log from '../utils/logger';
 import shell from 'shelljs';
-import { preparePages, SimpleGit, git } from './utils/git';
+import { preparePages, SimpleGit, git } from '../utils/git';
 import { existsSync, ensureDir, writeFile } from 'fs-extra';
 import { get as getVersioning } from 'renovate/dist/versioning';
 import { setFailed } from '@actions/core';
-import { isDryRun } from './util';
+import { isDryRun, getWorkspace } from '../util';
 import chalk from 'chalk';
 
 const verRe = /\/(?<name>(?<release>\d+\.\d+)\/python-(?<version>\d+\.\d+\.\d+)\.tar\.xz)$/;
@@ -60,9 +60,13 @@ async function updateReadme(path: string): Promise<void> {
   try {
     log.info('Releaser started');
     const dryRun = isDryRun();
-    const ws = process.cwd();
+    const ws = getWorkspace();
     const data = `${ws}/data`;
     const cache = `${ws}/.cache`;
+
+    if (dryRun) {
+      log.warn(chalk.yellow('[DRY_RUN] detected'));
+    }
 
     log('Prepare worktree');
     const git = await prepare(ws);
