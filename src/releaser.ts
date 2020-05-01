@@ -61,7 +61,7 @@ async function prepare(ws: string): Promise<SimpleGit> {
     if (!status.isClean()) {
       log('Commiting files');
       git.commit('updated builds');
-      git.push('origin', 'gh-pages:gh-pages', { '--force': true });
+      git.push('origin', 'gh-pages', { '--force': true });
     }
 
     for (const version of versions) {
