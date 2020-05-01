@@ -1,0 +1,5 @@
+name: 'python-builder'
+description: ''
+runs:
+  using: 'node12'
+  main: '../../dist/builder/index.js'

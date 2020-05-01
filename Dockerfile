@@ -1,5 +1,5 @@
-# renovate: datasource=docker depName=ubuntu versioning=docker
-ARG UBUNTU_VERSION=20.04
+# renovate: datasource=docker depName=renovate/ubuntu versioning=docker
+ARG UBUNTU_VERSION=18.04
 
 
 #--------------------------------------
@@ -16,7 +16,7 @@ COPY --from=renovate/buildpack:2 /usr/local/bin /usr/local/bin
 ENV BASH_ENV=/usr/local/etc/env
 SHELL ["/bin/bash" , "-c"]
 
-ENTRYPOINT [ "docker-entrypoint.sh" ]
+ENTRYPOINT [ "docker-entrypoint.sh", "python-build" ]
 
 RUN install-apt dumb-init build-essential libssl-dev libreadline-dev zlib1g-dev libffi-dev
 
@@ -27,8 +27,6 @@ RUN set -ex; \
   popd; \
   rm -rf pyenv;
 
-
+# rebuild trigger
 # renovate: datasource=docker depName=python versioning=docker
 ENV PYTHON_VERSION=3.7.5
-
-CMD ["python-build", "${PYTHON_VERSION}", "/usr/local/python/${PYTHON_VERSION}"]

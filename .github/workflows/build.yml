@@ -26,26 +26,13 @@ jobs:
         with:
           command: github-cleanup
           token: ${{ secrets.GH_TOKEN }}
-
-  build:
+  compile:
     needs: [cleanup]
     runs-on: ubuntu-latest
 
-    # timeout-minutes: 60
-
-    strategy:
-      matrix:
-        ubuntu_version: [18.04, 20.04]
-
-    env:
-      UBUNTU_VERSION: ${{ matrix.ubuntu_version }}
+    timeout-minutes: 10
 
     steps:
-      - name: docker-config
-        uses: renovatebot/internal-tools@v0
-        with:
-          command: docker-config
-
       - name: Set up Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v1
         with:
@@ -53,7 +40,6 @@ jobs:
 
       - name: Init platform
         id: init
-        shell: bash
         run: |
           echo "::set-output name=yarn_cache::$(yarn cache dir)"
 
@@ -81,18 +67,51 @@ jobs:
         if: github.ref == 'refs/heads/master' && steps.yarn_cache_packages.outputs.cache-hit != 'true'
         run: yarn cache clean
 
+      - name: Build
+        run: yarn install --frozen-lockfile --link-duplicates
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: builder
+          path: dist/
+
+  build:
+    needs: [cleanup]
+    runs-on: ubuntu-latest
+
+    # timeout-minutes: 60
+
+    strategy:
+      matrix:
+        ubuntu_version: [18.04, 20.04]
+
+    env:
+      UBUNTU_VERSION: ${{ matrix.ubuntu_version }}
+
+    steps:
+      - name: docker-config
+        uses: renovatebot/internal-tools@v0
+        with:
+          command: docker-config
+
+      - uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: builder
+          path: ./
+
       - name: Prepare
         run: |
           git fetch origin data
           git worktree add --track -b data ./data origin/data
-          yarn install --frozen-lockfile --link-duplicates
 
       - name: Build builder
         run: |
           docker buildx build --load -t builder --build-arg UBUNTU_VERSION .
 
-      - name: Build python
-        run: yarn start
+      - name: python-builder
+        uses: ./actions/builder/
 
       - uses: actions/upload-artifact@v2
         with:
@@ -109,6 +128,11 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           path: ./.cache
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: builder
+          path: ./
 
       - name: Prepare
         run: |
