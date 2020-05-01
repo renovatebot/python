@@ -13,6 +13,7 @@ env:
   FORCE_COLOR: true
   NODE_VERSION: 12
   YARN_CACHE_KEY: v1
+  YARN_CACHE_FOLDER: /mnt/cache/yarn
 
 jobs:
   cleanup:
@@ -38,20 +39,13 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Init platform
-        id: init
-        run: |
-          echo "::set-output name=yarn_cache::$(yarn cache dir)"
-        env:
-          FORCE_COLOR:
-
       - uses: actions/checkout@v2
 
       - name: Cache Yarn packages
         id: yarn_cache_packages
         uses: actions/cache@v1
         with:
-          path: ${{ steps.init.outputs.yarn_cache }}
+          path: ${{ env.YARN_CACHE_FOLDER }}
           key: ${{ env.YARN_CACHE_KEY }}-${{ runner.os }}-yarn_cache-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ env.YARN_CACHE_KEY }}-${{ runner.os }}-yarn_cache-
