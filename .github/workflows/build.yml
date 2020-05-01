@@ -103,11 +103,8 @@ jobs:
 
       - name: Prepare
         run: |
-          git fetch origin data
-          git worktree add --track -b data ./data origin/data
-
-      - name: Build builder
-        run: |
+          git fetch origin gh-pages
+          git worktree add --track -b gh-pages ./data origin/gh-pages
           docker buildx build --load -t builder --build-arg UBUNTU_VERSION .
 
       - name: python-builder
@@ -139,7 +136,7 @@ jobs:
           git config --global user.email 'bot@renovateapp.com'
           git config --global user.name  'Renovate Bot'
           git fetch origin data
-          git worktree add --track -b data ./data origin/data
+          git worktree add --track -b gh-pages ./data origin/gh-pages
 
       - name: Release
         if: ${{github.ref == 'refs/heads/master'}}
@@ -150,8 +147,10 @@ jobs:
             exit 0
           fi
           shopt -s globstar
-          cp --parents -R ./.cache/**/*.tar.xz ./data/
+          pushd .cache
+          cp --parents -R ./**/*.tar.xz ../data/
+          popd
           pushd ./data
           git add .
           git diff-index --quiet HEAD || git commit -m "updated builds"
-          git push -f origin data:data
+          git push -f origin gh-pages:gh-pages
