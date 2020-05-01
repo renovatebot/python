@@ -13,7 +13,7 @@ env:
   FORCE_COLOR: true
   NODE_VERSION: 12
   YARN_CACHE_KEY: v1
-  YARN_CACHE_FOLDER: /mnt/cache/yarn
+  YARN_CACHE_FOLDER: .cache/yarn
 
 jobs:
   cleanup:
