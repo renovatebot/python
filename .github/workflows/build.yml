@@ -103,6 +103,8 @@ jobs:
 
       - name: Prepare
         run: |
+          ls -la
+          ls -la dist
           git fetch origin data
           git worktree add --track -b data ./data origin/data
 
