@@ -76,7 +76,7 @@ jobs:
           path: dist/
 
   build:
-    needs: [cleanup]
+    needs: [compile]
     runs-on: ubuntu-latest
 
     # timeout-minutes: 60
