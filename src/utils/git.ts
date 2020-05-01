@@ -16,7 +16,7 @@ export async function preparePages(
   await git.fetch('origin', 'gh-pages', { '--tags': tags });
 
   if (!existsSync(`${ws}/data`)) {
-    log('creating worktree:', `${ws}/data`);
+    log('creating worktree:');
     await git.raw([
       'worktree',
       'add',
@@ -24,7 +24,7 @@ export async function preparePages(
       '-b',
       'gh-pages',
       './data',
-      ' origin/gh-pages',
+      'origin/gh-pages',
     ]);
   }
 
