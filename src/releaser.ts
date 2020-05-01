@@ -1,7 +1,8 @@
 import log from './utils/logger';
 import shell from 'shelljs';
 import { preparePages, SimpleGit, git } from './utils/git';
-import { existsSync, ensureDir } from 'fs-extra';
+import { existsSync, ensureDir, writeFile } from 'fs-extra';
+import { get as getVersioning } from 'renovate/dist/versioning';
 
 const verRe = /\/(?<name>(?<release>\d+\.\d+)\/python-(?<version>\d+\.\d+\.\d+)\.tar\.xz)$/;
 
@@ -12,6 +13,44 @@ async function prepare(ws: string): Promise<SimpleGit> {
   await repo.addConfig('user.email', 'bot@renovateapp.com');
 
   return git(`${ws}/data`);
+}
+async function updateReadme(path: string): Promise<void> {
+  const files = shell.find(`${path}/**/*.tar.xz`);
+  log('Processing files:', files.length);
+  const releases: Record<string, Record<string, string>> = Object.create(null);
+
+  for (const file of files) {
+    const m = verRe.exec(file);
+
+    if (!m?.groups) {
+      log.warn('Invalid file:', file);
+      continue;
+    }
+
+    const { name, version, release } = m.groups;
+
+    if (!releases[release]) {
+      releases[release] = Object.create(null);
+    }
+
+    releases[release][version] = name;
+  }
+
+  const dockerVer = getVersioning('docker');
+  const semver = getVersioning('semver');
+
+  let md = `# python releases\n\n` + `Prebuild python builds for ubuntu\n\n`;
+  for (const release of Object.keys(releases).sort(dockerVer.sortVersions)) {
+    md += `## ubuntu ${release}\n\n`;
+
+    const data = releases[release];
+
+    for (const version of Object.keys(data).sort(semver.sortVersions)) {
+      md += `* [${version}](${data[version]})\n`;
+    }
+  }
+
+  await writeFile(`${path}/readme.md`, md);
 }
 
 (async () => {
@@ -56,11 +95,13 @@ async function prepare(ws: string): Promise<SimpleGit> {
       }
     }
 
+    await updateReadme(data);
+
     await git.add('.');
     const status = await git.status();
     if (!status.isClean()) {
       log('Commiting files');
-      git.commit('updated builds');
+      git.commit('updated files');
       git.push('origin', 'gh-pages', { '--force': true });
     }
 
