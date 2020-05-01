@@ -1,16 +1,24 @@
-import { exec, getEnv, isDryRun, getArg, readFile, getWorkspace } from './util';
+import {
+  exec,
+  getEnv,
+  isDryRun,
+  getArg,
+  readFile,
+  getWorkspace,
+} from '../util';
 import { init as cacheInit } from 'renovate/dist/workers/global/cache';
 import os from 'os';
 import { existsSync } from 'fs';
-import log from './utils/logger';
-import { preparePages } from './utils/git';
+import log from '../utils/logger';
+import { preparePages } from '../utils/git';
 import { getPkgReleases, ReleaseResult } from 'renovate/dist/datasource';
 import { get as getVersioning } from 'renovate/dist/versioning';
 import { readJSON } from 'fs-extra';
-import { Config, ConfigFile } from './types/builder';
+import { Config, ConfigFile } from '../types/builder';
 import chalk from 'chalk';
 import is from '@sindresorhus/is';
 import { setFailed } from '@actions/core';
+import shell from 'shelljs';
 
 cacheInit(os.tmpdir());
 
@@ -162,7 +170,7 @@ async function getConfig(ws: string): Promise<Config> {
 const DefaultUbuntuRelease = '18.04';
 (async () => {
   try {
-    log.info('Releaser started');
+    log.info('Builder started');
     const ws = getWorkspace();
     const data = `${ws}/data/${
       getEnv('UBUNTU_VERSION') || DefaultUbuntuRelease
@@ -170,7 +178,6 @@ const DefaultUbuntuRelease = '18.04';
 
     await preparePages(ws);
 
-    exec('mkdir', ['-p', `.cache/python`]);
     const cfg = await getConfig(ws);
 
     if (cfg.dryRun) {
@@ -178,7 +185,11 @@ const DefaultUbuntuRelease = '18.04';
       cfg.lastOnly = true;
     }
 
+    log('config:', JSON.stringify(cfg));
+
     const versions = await getBuildList(cfg);
+
+    shell.mkdir('-p', `${ws}/.cache/python`);
 
     for (const version of versions) {
       if (existsSync(`${data}/python-${version}.tar.xz`)) {

@@ -50,11 +50,6 @@ export async function exec(
   return { code, stdout, stderr };
 }
 
-export function isDryRun(): boolean {
-  const val = getInput('dry-run');
-  return !!val && val === 'true';
-}
-
 /**
  * Get environment variable or empty string.
  * Used for easy mocking.
@@ -64,8 +59,17 @@ export function getEnv(key: string): string {
   return process.env[key] ?? '';
 }
 
+export function isCI(): boolean {
+  return !!getEnv('CI');
+}
+
+export function isDryRun(): boolean {
+  const val = getInput('dry-run') || getEnv('DRY_RUN');
+  return (!!val && val === 'true') || !isCI();
+}
+
 export function getWorkspace(): string {
-  return getEnv('GITHUB_WORKSPACE') ?? process.cwd();
+  return getEnv('GITHUB_WORKSPACE') || process.cwd();
 }
 
 export async function readJson<T = unknown>(file: string): Promise<T> {
