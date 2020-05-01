@@ -74,6 +74,7 @@ async function updateReadme(path: string): Promise<void> {
     const versions = new Set<string>();
     const tags = new Set((await git.tags()).all);
 
+    log.info('Checking for new builds');
     if (existsSync(cache)) {
       const files = shell.find(`${cache}/**/*.tar.xz`);
       log('Processing files:', files.length);
@@ -103,8 +104,10 @@ async function updateReadme(path: string): Promise<void> {
       }
     }
 
+    log.info('Update readme');
     await updateReadme(data);
 
+    log.info('Update gh-pages');
     await git.add('.');
     const status = await git.status();
     if (!status.isClean()) {
@@ -121,6 +124,7 @@ async function updateReadme(path: string): Promise<void> {
       }
     }
 
+    log.info('Update tags');
     for (const version of versions) {
       log('Add tag', version);
       git.addTag(version);
