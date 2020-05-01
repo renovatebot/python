@@ -12,7 +12,7 @@ env:
   # https://github.com/chalk/supports-color/issues/106
   FORCE_COLOR: true
   NODE_VERSION: 12
-  YARN_CACHE_KEY: v2
+  YARN_CACHE_KEY: v1
 
 jobs:
   cleanup:
@@ -42,6 +42,8 @@ jobs:
         id: init
         run: |
           echo "::set-output name=yarn_cache::$(yarn cache dir)"
+        env:
+          FORCE_COLOR:
 
       - uses: actions/checkout@v2
 
@@ -103,8 +105,6 @@ jobs:
 
       - name: Prepare
         run: |
-          git fetch origin gh-pages
-          git worktree add --track -b gh-pages ./data origin/gh-pages
           docker buildx build --load -t builder --build-arg UBUNTU_VERSION .
 
       - name: python-builder
@@ -131,26 +131,6 @@ jobs:
           name: builder
           path: ./dist
 
-      - name: Prepare
-        run: |
-          git config --global user.email 'bot@renovateapp.com'
-          git config --global user.name  'Renovate Bot'
-          git fetch origin data
-          git worktree add --track -b gh-pages ./data origin/gh-pages
-
-      - name: Release
+      - name: git-release
         if: ${{github.ref == 'refs/heads/master'}}
-        run: |
-          set -ex
-          if [[ ! -d "./.cache" ]]; then
-            echo "No new files! Skipping release"
-            exit 0
-          fi
-          shopt -s globstar
-          pushd .cache
-          cp --parents -R ./**/*.tar.xz ../data/
-          popd
-          pushd ./data
-          git add .
-          git diff-index --quiet HEAD || git commit -m "updated builds"
-          git push -f origin gh-pages:gh-pages
+        uses: ./actions/releaser/

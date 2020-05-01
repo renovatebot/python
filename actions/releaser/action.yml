@@ -1,0 +1,5 @@
+name: 'git-releaser'
+description: ''
+runs:
+  using: 'node12'
+  main: '../../dist/releaser/index.js'

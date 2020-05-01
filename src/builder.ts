@@ -3,6 +3,7 @@ import { init as cacheInit } from 'renovate/dist/workers/global/cache';
 import os from 'os';
 import { existsSync } from 'fs';
 import log from './utils/logger';
+import { preparePages } from './utils/git';
 
 cacheInit(os.tmpdir());
 
@@ -25,19 +26,13 @@ async function pythonBuilder(ws: string, version: string): Promise<void> {
   );
 }
 
-// async function dockerBuildx(...args: string[]): Promise<void> {
-//   await docker('buildx', ...args);
-// }
-
 (async () => {
   try {
+    log.info('Releaser started');
     const ws = process.cwd();
     const data = `${ws}/data/${getEnv('UBUNTU_VERSION')}`;
 
-    // const github = new GitHub(process.env.GITHUB_TOKEN);
-
-    // // Get owner and repo from context of payload that triggered the action
-    // const { owner, repo } = context.repo;
+    await preparePages(ws);
 
     exec('mkdir', ['-p', `.cache/python`]);
 
