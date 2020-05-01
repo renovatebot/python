@@ -4,7 +4,7 @@ import { preparePages, SimpleGit, git } from '../utils/git';
 import { existsSync, ensureDir, writeFile } from 'fs-extra';
 import { get as getVersioning } from 'renovate/dist/versioning';
 import { setFailed } from '@actions/core';
-import { isDryRun, getWorkspace } from '../util';
+import { isDryRun, getWorkspace, isCI } from '../util';
 import chalk from 'chalk';
 
 const verRe = /\/(?<name>(?<release>\d+\.\d+)\/python-(?<version>\d+\.\d+\.\d+)\.tar\.xz)$/;
@@ -12,8 +12,10 @@ const verRe = /\/(?<name>(?<release>\d+\.\d+)\/python-(?<version>\d+\.\d+\.\d+)\
 async function prepare(ws: string): Promise<SimpleGit> {
   const repo = await preparePages(ws, true);
 
-  await repo.addConfig('user.name', 'Renovate Bot');
-  await repo.addConfig('user.email', 'bot@renovateapp.com');
+  if (isCI()) {
+    await repo.addConfig('user.name', 'Renovate Bot');
+    await repo.addConfig('user.email', 'bot@renovateapp.com');
+  }
 
   return git(`${ws}/data`);
 }
@@ -137,6 +139,7 @@ async function updateReadme(path: string): Promise<void> {
       git.pushTags();
     }
   } catch (error) {
+    log(error.stack);
     setFailed(error.message);
   }
 })();
