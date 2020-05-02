@@ -2,7 +2,7 @@ import 'source-map-support/register';
 import 'renovate/dist/util/cache/global/file';
 import log from '../utils/logger';
 import shell from 'shelljs';
-import { preparePages, SimpleGit, git } from '../utils/git';
+import { prepareWorkspace, SimpleGit, git, ReleaseBranch } from '../utils/git';
 import { existsSync, ensureDir, writeFile } from 'fs-extra';
 import { get as getVersioning } from 'renovate/dist/versioning';
 import { setFailed } from '@actions/core';
@@ -12,7 +12,7 @@ import chalk from 'chalk';
 const verRe = /\/(?<name>(?<release>\d+\.\d+)\/python-(?<version>\d+\.\d+\.\d+)\.tar\.xz)$/;
 
 async function prepare(ws: string): Promise<SimpleGit> {
-  const repo = await preparePages(ws, true);
+  const repo = await prepareWorkspace(ws, true);
 
   if (isCI()) {
     await repo.addConfig('user.name', 'Renovate Bot');
@@ -121,10 +121,10 @@ async function updateReadme(path: string): Promise<void> {
         log.warn(
           chalk.yellow('[DRY_RUN]'),
           chalk.blue('Would push:'),
-          'releases'
+          ReleaseBranch
         );
       } else {
-        git.push('origin', 'releases', { '--force': true });
+        git.push('origin', ReleaseBranch, { '--force': true });
       }
     }
 
