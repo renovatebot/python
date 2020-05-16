@@ -1,3 +1,5 @@
+import 'source-map-support/register';
+import 'renovate/dist/util/cache/global/file';
 import log from '../utils/logger';
 import shell from 'shelljs';
 import { preparePages, SimpleGit, git } from '../utils/git';

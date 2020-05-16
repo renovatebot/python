@@ -7,8 +7,8 @@
   "author": "Michael Kriese <michael.kriese@visualon.de>",
   "scripts": {
     "compile": "run-p compile:*",
-    "compile:builder": "cd src/builder && ncc build ./index.ts -o ../../dist/builder",
-    "compile:releaser": "cd src/releaser && ncc build ./index.ts -o ../../dist/releaser",
+    "compile:builder": "cd src/builder && ncc build ./index.ts -s -o ../../dist/builder",
+    "compile:releaser": "cd src/releaser && ncc build ./index.ts -s -o ../../dist/releaser",
     "eslint": "eslint . --ext .js,.mjs,.ts",
     "eslint:fix": "yarn eslint --fix",
     "lint": "run-s eslint prettier",
@@ -28,8 +28,9 @@
     "find-up": "4.1.0",
     "got": "11.1.0",
     "lzma-native": "6.0.1",
-    "renovate": "19.228.1",
+    "renovate": "19.239.7",
     "semver": "7.3.2",
+    "source-map-support": "0.5.19",
     "strip-ansi": "6.0.0",
     "tar": "6.0.2",
     "www-authenticate": "0.6.2"
