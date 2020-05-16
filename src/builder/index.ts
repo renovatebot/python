@@ -6,8 +6,6 @@ import {
   readFile,
   getWorkspace,
 } from '../util';
-import { init as cacheInit } from 'renovate/dist/workers/global/cache';
-import os from 'os';
 import { existsSync, createWriteStream } from 'fs';
 import log from '../utils/logger';
 import { preparePages } from '../utils/git';
@@ -25,8 +23,6 @@ import { pipeline as _pipeline } from 'stream';
 import { promisify } from 'util';
 
 const pipeline = promisify(_pipeline);
-
-cacheInit(os.tmpdir());
 
 async function docker(...args: string[]): Promise<void> {
   await exec('docker', [...args]);
@@ -197,6 +193,8 @@ const DefaultUbuntuRelease = '18.04';
 
     shell.mkdir('-p', `${ws}/.cache/python`);
 
+    let builds = 5;
+
     for (const version of versions) {
       if (existsSync(`${data}/python-${version}.tar.xz`)) {
         if (cfg.dryRun) {
@@ -210,18 +208,15 @@ const DefaultUbuntuRelease = '18.04';
         }
       }
 
+      if (builds-- < 0) {
+        log('Build limit reached');
+        break;
+      }
       log('Building version:', version);
+
       await pythonBuilder(ws, version);
 
       log('Compressing version:', version);
-      // await exec('tar', [
-      //   '-cJf',
-      //   `./.cache/python-${version}.tar.xz`,
-      //   '-C',
-      //   '.cache/python',
-      //   version,
-      // ]);
-
       const output = createWriteStream(`./.cache/python-${version}.tar.xz`);
       const compressor = lzma.createCompressor();
 
