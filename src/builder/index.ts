@@ -10,7 +10,7 @@ import {
 } from '../util';
 import { existsSync, createWriteStream } from 'fs';
 import log from '../utils/logger';
-import { preparePages } from '../utils/git';
+import { prepareWorkspace } from '../utils/git';
 import { getPkgReleases, ReleaseResult } from 'renovate/dist/datasource';
 import { get as getVersioning } from 'renovate/dist/versioning';
 import { readJSON } from 'fs-extra';
@@ -180,7 +180,7 @@ const DefaultUbuntuRelease = '18.04';
       getEnv('UBUNTU_VERSION') || DefaultUbuntuRelease
     }`;
 
-    await preparePages(ws);
+    await prepareWorkspace(ws);
 
     const cfg = await getConfig(ws);
 

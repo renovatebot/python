@@ -7,13 +7,15 @@ export { simleGit as git };
 
 export type SimpleGit = simleGit.SimpleGit;
 
-export async function preparePages(
+export const ReleaseBranch = 'releases';
+
+export async function prepareWorkspace(
   ws: string,
   tags?: boolean
 ): Promise<SimpleGit> {
   const git = simleGit(ws);
 
-  await git.fetch('origin', 'releases', { '--tags': tags });
+  await git.fetch('origin', ReleaseBranch, { '--tags': tags });
 
   if (!existsSync(`${ws}/data`)) {
     log('creating worktree');
@@ -23,9 +25,9 @@ export async function preparePages(
       '--force',
       '--track',
       '-B',
-      'releases',
+      ReleaseBranch,
       './data',
-      'origin/releases',
+      `origin/${ReleaseBranch}`,
     ]);
   }
 
