@@ -18,7 +18,17 @@ SHELL ["/bin/bash" , "-c"]
 
 ENTRYPOINT [ "docker-entrypoint.sh", "python-build" ]
 
-RUN install-apt dumb-init build-essential libssl-dev libreadline-dev zlib1g-dev libffi-dev
+RUN install-apt \
+  build-essential \
+  dumb-init \
+  libbz2-dev \
+  libffi-dev \
+  liblzma-dev \
+  libreadline-dev \
+  libsqlite3-dev \
+  libssl-dev \
+  zlib1g-dev \
+  ;
 
 RUN set -ex; \
   git clone https://github.com/pyenv/pyenv.git; \

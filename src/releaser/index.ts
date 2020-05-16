@@ -109,7 +109,7 @@ async function updateReadme(path: string): Promise<void> {
     log.info('Update readme');
     await updateReadme(data);
 
-    log.info('Update gh-pages');
+    log.info('Update releases');
     await git.add('.');
     const status = await git.status();
     if (!status.isClean()) {
@@ -119,10 +119,10 @@ async function updateReadme(path: string): Promise<void> {
         log.warn(
           chalk.yellow('[DRY_RUN]'),
           chalk.blue('Would push:'),
-          'gh-pages'
+          'releases'
         );
       } else {
-        git.push('origin', 'gh-pages', { '--force': true });
+        git.push('origin', 'releases', { '--force': true });
       }
     }
 

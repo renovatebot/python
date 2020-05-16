@@ -13,7 +13,7 @@ export async function preparePages(
 ): Promise<SimpleGit> {
   const git = simleGit(ws);
 
-  await git.fetch('origin', 'gh-pages', { '--tags': tags });
+  await git.fetch('origin', 'releases', { '--tags': tags });
 
   if (!existsSync(`${ws}/data`)) {
     log('creating worktree');
@@ -23,9 +23,9 @@ export async function preparePages(
       '--force',
       '--track',
       '-B',
-      'gh-pages',
+      'releases',
       './data',
-      'origin/gh-pages',
+      'origin/releases',
     ]);
   }
 
