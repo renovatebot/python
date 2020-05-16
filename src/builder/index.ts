@@ -8,7 +8,7 @@ import {
 } from '../util';
 import { init as cacheInit } from 'renovate/dist/workers/global/cache';
 import os from 'os';
-import { existsSync } from 'fs';
+import { existsSync, createWriteStream } from 'fs';
 import log from '../utils/logger';
 import { preparePages } from '../utils/git';
 import { getPkgReleases, ReleaseResult } from 'renovate/dist/datasource';
@@ -19,6 +19,12 @@ import chalk from 'chalk';
 import is from '@sindresorhus/is';
 import { setFailed } from '@actions/core';
 import shell from 'shelljs';
+import tar from 'tar';
+import lzma from 'lzma-native';
+import { pipeline as _pipeline } from 'stream';
+import { promisify } from 'util';
+
+const pipeline = promisify(_pipeline);
 
 cacheInit(os.tmpdir());
 
@@ -31,9 +37,9 @@ async function dockerRun(...args: string[]): Promise<void> {
 
 async function pythonBuilder(ws: string, version: string): Promise<void> {
   await dockerRun(
-    '-u',
-    'root',
-    '-v',
+    '--name',
+    'builder',
+    '--volume',
     `${ws}/.cache/python:/usr/local/python`,
     'builder',
     version,
@@ -193,21 +199,40 @@ const DefaultUbuntuRelease = '18.04';
 
     for (const version of versions) {
       if (existsSync(`${data}/python-${version}.tar.xz`)) {
-        log('Skipping existing version:', version);
-        continue;
+        if (cfg.dryRun) {
+          log.warn(
+            chalk.yellow('[DRY_RUN] Would skipp existing version:'),
+            version
+          );
+        } else {
+          log('Skipping existing version:', version);
+          continue;
+        }
       }
 
       log('Building version:', version);
       await pythonBuilder(ws, version);
 
       log('Compressing version:', version);
-      await exec('tar', [
-        '-cJf',
-        `./.cache/python-${version}.tar.xz`,
-        '-C',
-        '.cache/python',
-        version,
-      ]);
+      // await exec('tar', [
+      //   '-cJf',
+      //   `./.cache/python-${version}.tar.xz`,
+      //   '-C',
+      //   '.cache/python',
+      //   version,
+      // ]);
+
+      const output = createWriteStream(`./.cache/python-${version}.tar.xz`);
+      const compressor = lzma.createCompressor();
+
+      const input = tar.c(
+        {
+          cwd: '.cache/python',
+        },
+        [version]
+      );
+
+      await pipeline(input, compressor, output);
     }
   } catch (error) {
     log(error.stack);
