@@ -22,9 +22,9 @@ RUN install-apt \
   build-essential \
   dumb-init \
   libbz2-dev \
-  libedit-dev \
   libffi-dev \
   liblzma-dev \
+  libreadline-dev \
   libsqlite3-dev \
   libssl-dev \
   zlib1g-dev \
