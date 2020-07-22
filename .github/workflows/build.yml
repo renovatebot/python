@@ -59,6 +59,9 @@ jobs:
           name: builder
           path: dist/
 
+      - name: lint
+        run: yarn lint
+
   build:
     needs: [compile]
     runs-on: ubuntu-latest

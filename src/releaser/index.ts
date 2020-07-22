@@ -1,5 +1,4 @@
 import 'source-map-support/register';
-import 'renovate/dist/util/cache/global/file';
 import log from '../utils/logger';
 import shell from 'shelljs';
 import { prepareWorkspace, SimpleGit, git, ReleaseBranch } from '../utils/git';
