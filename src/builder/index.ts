@@ -1,5 +1,4 @@
 import 'source-map-support/register';
-import 'renovate/dist/util/cache/global/file';
 import {
   exec,
   getEnv,

@@ -9,7 +9,7 @@
     "compile": "run-p compile:*",
     "compile:builder": "cd src/builder && ncc build ./index.ts -s -o ../../dist/builder",
     "compile:releaser": "cd src/releaser && ncc build ./index.ts -s -o ../../dist/releaser",
-    "eslint": "eslint . --ext .js,.mjs,.ts",
+    "eslint": "eslint .",
     "eslint:fix": "yarn eslint --fix",
     "lint": "run-s eslint prettier",
     "prepare": "run-s compile:*",
