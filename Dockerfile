@@ -39,4 +39,4 @@ RUN set -ex; \
 
 # rebuild trigger
 # renovate: datasource=docker depName=python versioning=docker
-ENV PYTHON_VERSION=3.8.4
+ENV PYTHON_VERSION=3.8.5
