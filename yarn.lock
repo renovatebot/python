@@ -5899,6 +5899,15 @@ simple-git@2.15.0:
     "@kwsites/promise-deferred" "^1.1.1"
     debug "^4.1.1"
 
+simple-git@2.16.0:
+  version "2.16.0"
+  resolved "https://registry.yarnpkg.com/simple-git/-/simple-git-2.16.0.tgz#ddf88eba00abf725476681a7f1dd09ef83b6601d"
+  integrity sha512-c6kdjeUEh0nGwvs4FszYUFd68orbamxjOMukonmlCo302z2AH+1745d9B5vqBuhevDZAj/n+fljwjSp76hO9Og==
+  dependencies:
+    "@kwsites/file-exists" "^1.1.1"
+    "@kwsites/promise-deferred" "^1.1.1"
+    debug "^4.1.1"
+
 sisteransi@^1.0.4:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/sisteransi/-/sisteransi-1.0.5.tgz#134d681297756437cc05ca01370d3a7a571075ed"
