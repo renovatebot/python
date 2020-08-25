@@ -123,7 +123,7 @@ async function updateReadme(path: string): Promise<void> {
           ReleaseBranch
         );
       } else {
-        git.push('origin', ReleaseBranch, { '--force': true });
+        git.push('origin', ReleaseBranch, { '--force': null });
       }
     }
 
