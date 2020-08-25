@@ -15,7 +15,7 @@ export async function prepareWorkspace(
 ): Promise<SimpleGit> {
   const git = simleGit(ws);
 
-  await git.fetch('origin', ReleaseBranch, { '--tags': tags });
+  await git.fetch('origin', ReleaseBranch, tags ? { '--tags': null } : {});
 
   if (!existsSync(`${ws}/data`)) {
     log('creating worktree');
