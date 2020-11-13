@@ -54,7 +54,7 @@ jobs:
       - name: Build
         run: yarn install --frozen-lockfile
 
-      - uses: actions/upload-artifact@v2.2.0
+      - uses: actions/upload-artifact@v2.2.1
         with:
           name: builder
           path: dist/
@@ -97,7 +97,7 @@ jobs:
         with:
           dry-run: ${{github.ref != 'refs/heads/master'}}
 
-      - uses: actions/upload-artifact@v2.2.0
+      - uses: actions/upload-artifact@v2.2.1
         with:
           name: ${{ matrix.ubuntu_version }}
           path: .cache/*.tar.xz
