@@ -2033,7 +2033,7 @@ debug@^3.2.6:
   dependencies:
     ms "^2.1.1"
 
-debug@^4.0.1, debug@^4.1.0, debug@^4.1.1:
+debug@^4.0.1, debug@^4.1.0, debug@^4.1.1, debug@^4.3.1:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.1.tgz#f0d229c505e0c6d8c49ac553d1b13dc183f6b2ee"
   integrity sha512-doEwdvm4PCeK4K3RQN2ZC2BYUBaxwLARCqZmMjtF8a51J2Rb0xpVloFRnCODwqjpwnAoao4pelN8l3RJdv3gRQ==
@@ -6184,6 +6184,15 @@ simple-git@2.21.0:
     "@kwsites/file-exists" "^1.1.1"
     "@kwsites/promise-deferred" "^1.1.1"
     debug "^4.1.1"
+
+simple-git@2.23.0:
+  version "2.23.0"
+  resolved "https://registry.yarnpkg.com/simple-git/-/simple-git-2.23.0.tgz#b15844956da63575ae81a9339e4eab29e8141182"
+  integrity sha512-s/gEkxFV2WGTN4kO1uQoA4cE4rq0FRzQPR5Yhgg8JUuA4IhOeccjlKSFhwF3rrpo7797ZvQc7L6hJJNA4szHCw==
+  dependencies:
+    "@kwsites/file-exists" "^1.1.1"
+    "@kwsites/promise-deferred" "^1.1.1"
+    debug "^4.3.1"
 
 sisteransi@^1.0.5:
   version "1.0.5"
