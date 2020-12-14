@@ -28,7 +28,7 @@
     "find-up": "5.0.0",
     "got": "11.8.0",
     "lzma-native": "6.0.1",
-    "renovate": "23.94.1",
+    "renovate": "24.2.4",
     "semver": "7.3.4",
     "source-map-support": "0.5.19",
     "strip-ansi": "6.0.0",
