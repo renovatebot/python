@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@types/fs-extra": "9.0.5",
-    "@types/jest": "26.0.15",
+    "@types/jest": "26.0.19",
     "@types/lzma-native": "4.0.0",
     "@types/node": "12.19.8",
     "@types/semver": "7.3.4",
