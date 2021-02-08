@@ -6,7 +6,7 @@ ARG FLAVOR=latest
 #--------------------------------------
 FROM renovate/buildpack:3-${FLAVOR} as build
 
-ENTRYPOINT [ "docker-entrypoint.sh", "python-build" ]
+ENTRYPOINT [ "docker-entrypoint.sh", "builder.sh" ]
 
 RUN install-apt \
   build-essential \
@@ -26,6 +26,8 @@ RUN set -ex; \
   popd; \
   rm -rf pyenv;
 
+COPY bin /usr/local/bin
+
 # rebuild trigger
 # renovate: datasource=docker depName=python versioning=docker
-ENV PYTHON_VERSION=3.9.1
+ARG PYTHON_VERSION=3.9.1
