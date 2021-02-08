@@ -39,3 +39,4 @@ jobs:
         with:
           name: ${{ matrix.flavor }}
           path: .cache/*.tar.xz
+          if-no-files-found: error
