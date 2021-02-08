@@ -12,6 +12,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        flavor: [bionic, focal]
+
+    env:
+      FLAVOR: ${{ matrix.flavor }}
+
     steps:
       - uses: actions/checkout@v2.3.4
 
@@ -29,5 +36,5 @@ jobs:
 
       - uses: actions/upload-artifact@v2.2.2
         with:
-          name: ${{ matrix.ubuntu_version }}
+          name: ${{ matrix.flavor }}
           path: .cache/*.tar.xz
