@@ -1,26 +1,16 @@
-# renovate: datasource=docker depName=renovate/ubuntu versioning=docker
-ARG UBUNTU_VERSION=18.04
+ARG FLAVOR=latest
 
 
 #--------------------------------------
 # base image
 #--------------------------------------
-FROM renovate/ubuntu:${UBUNTU_VERSION} as build
+FROM renovate/buildpack:3-${FLAVOR} as build
 
-USER root
+ENTRYPOINT [ "docker-entrypoint.sh", "builder.sh" ]
 
-COPY --from=renovate/buildpack:3@sha256:3618e211c1972e3676222ce1801202d3682cb78a456ea41e72451bc9c0f87779 /usr/local/build /usr/local/build
-COPY --from=renovate/buildpack:3@sha256:3618e211c1972e3676222ce1801202d3682cb78a456ea41e72451bc9c0f87779 /usr/local/bin /usr/local/bin
-
-# loading env
-ENV BASH_ENV=/usr/local/etc/env
-SHELL ["/bin/bash" , "-c"]
-
-ENTRYPOINT [ "docker-entrypoint.sh", "python-build" ]
 
 RUN install-apt \
   build-essential \
-  dumb-init \
   libbz2-dev \
   libffi-dev \
   liblzma-dev \
@@ -37,6 +27,8 @@ RUN set -ex; \
   popd; \
   rm -rf pyenv;
 
+COPY bin /usr/local/bin
+
 # rebuild trigger
 # renovate: datasource=docker depName=python versioning=docker
-ENV PYTHON_VERSION=3.9.1
+ARG PYTHON_VERSION=3.9.1
