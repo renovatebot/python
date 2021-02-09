@@ -8,6 +8,7 @@ FROM renovate/buildpack:3-${FLAVOR} as build
 
 ENTRYPOINT [ "docker-entrypoint.sh", "builder.sh" ]
 
+
 RUN install-apt \
   build-essential \
   libbz2-dev \
