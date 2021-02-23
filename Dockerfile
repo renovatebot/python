@@ -1,10 +1,13 @@
-ARG FLAVOR=latest
-
-
 #--------------------------------------
 # base image
 #--------------------------------------
-FROM renovate/buildpack:3-${FLAVOR} as build
+FROM renovate/buildpack:4@sha256:d25d3139e52e4fce971dfd47b4f99b6c297ca1f8dfec5a5de4a507db065dadb5 as build
+
+
+# build target, name required by binary-builder
+ARG FLAVOR
+RUN . /etc/os-release; [ "${VERSION_CODENAME}" == "${FLAVOR}" ] || exit 55
+
 
 ENTRYPOINT [ "docker-entrypoint.sh", "builder.sh" ]
 
@@ -28,7 +31,3 @@ RUN set -ex; \
   rm -rf pyenv;
 
 COPY bin /usr/local/bin
-
-# rebuild trigger
-# renovate: datasource=docker depName=python versioning=docker
-ARG PYTHON_VERSION=3.9.1
