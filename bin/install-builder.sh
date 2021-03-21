@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+set -e
 
 
 echo "APT::Install-Recommends \"false\";" | tee -a /etc/apt/apt.conf.d/buildpack.conf
@@ -11,6 +11,7 @@ echo "APT::Get::Install-Suggests \"false\";" | tee -a /etc/apt/apt.conf.d/buildp
 apt-get update
 apt-get install -y \
   build-essential \
+  ca-certificates \
   dumb-init \
   git \
   libbz2-dev \
