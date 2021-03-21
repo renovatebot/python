@@ -1,33 +1,23 @@
 #--------------------------------------
-# base image
+# Ubuntu flavor
 #--------------------------------------
-FROM renovate/buildpack:4@sha256:ffe1aaf6db31f7a081806a028fef5369b3f78395b3a87707d3f82d4cadbe796d as build
-
-
-# build target, name required by binary-builder
 ARG FLAVOR
-RUN . /etc/os-release; [ "${VERSION_CODENAME}" == "${FLAVOR}" ] || exit 55
+
+#--------------------------------------
+# base images
+#--------------------------------------
+FROM ubuntu:bionic as build-bionic
+FROM ubuntu:focal as build-focal
 
 
-ENTRYPOINT [ "docker-entrypoint.sh", "builder.sh" ]
+#--------------------------------------
+# builder images
+#--------------------------------------
+FROM build-${FLAVOR} as builder
 
 
-RUN install-apt \
-  build-essential \
-  libbz2-dev \
-  libffi-dev \
-  liblzma-dev \
-  libreadline-dev \
-  libsqlite3-dev \
-  libssl-dev \
-  zlib1g-dev \
-  ;
-
-RUN set -ex; \
-  git clone https://github.com/pyenv/pyenv.git; \
-  pushd pyenv/plugins/python-build; \
-  ./install.sh; \
-  popd; \
-  rm -rf pyenv;
+ENTRYPOINT [ "dumb-init", "--", "builder.sh" ]
 
 COPY bin /usr/local/bin
+
+RUN install-builder.sh
