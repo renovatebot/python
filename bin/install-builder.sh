@@ -27,3 +27,5 @@ git clone https://github.com/pyenv/pyenv.git
 pushd pyenv/plugins/python-build
 ./install.sh
 popd
+
+mkdir -p /usr/local/python
