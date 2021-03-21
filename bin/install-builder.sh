@@ -12,6 +12,7 @@ apt-get update
 apt-get install -y \
   build-essential \
   ca-certificates \
+  curl \
   dumb-init \
   git \
   libbz2-dev \
@@ -28,4 +29,4 @@ pushd pyenv/plugins/python-build
 ./install.sh
 popd
 
-mkdir -p /usr/local/python
+mkdir -p /usr/local/python /cache
